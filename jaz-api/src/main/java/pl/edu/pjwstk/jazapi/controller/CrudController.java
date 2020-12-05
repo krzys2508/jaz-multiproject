@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.edu.pjwstk.jazapi.service.CrudService;
 import pl.edu.pjwstk.jazapi.service.DbEntity;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,9 +25,13 @@ public abstract class CrudController<T extends DbEntity> {
 
     @GetMapping()
     public ResponseEntity<List<Map<String, Object>>> getAll(@RequestParam(defaultValue = "1", name = "page") int page,
-                                                            @RequestParam(defaultValue = "4", name = "size") int size){
+                                                            @RequestParam(defaultValue = "4", name = "size") int size,
+                                                            @RequestParam(defaultValue = "desc,id",name = "sort")String sort){
         try {
-            List<T> all = service.getAll(page, size);
+            String [] sortInfo = (sort.split(","));
+         String typeOfSort = sortInfo[0];
+         String [] params = Arrays.copyOfRange(sortInfo,1,sortInfo.length);
+            List<T> all = service.getAll(page, size, typeOfSort ,params);
             List<Map<String, Object>> payload = all.stream()
                     .map(obj -> transformToDTO().apply(obj))
                     .collect(Collectors.toList());

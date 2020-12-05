@@ -3,7 +3,7 @@ package pl.edu.pjwstk.jazapi.service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
+
 
 import java.awt.print.Pageable;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ public abstract class CrudService<T extends DbEntity> {
         this.repository = repository;
     }
 
-    public List<T> getAll(int page, int size) {
-        Iterable<T> items = repository.findAll(PageRequest.of(page,size));
+    public List<T> getAll(int page, int size, String sort, String ... properties) {
+        Iterable<T> items = repository.findAll(PageRequest.of(page,size,Sort.Direction.valueOf(sort)));
         var itemList = new ArrayList<T>();
 
         items.forEach(itemList::add);
