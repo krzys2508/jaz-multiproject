@@ -1,14 +1,13 @@
 package pl.edu.pjwstk.jazapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.pjwstk.jazapi.service.CrudService;
 import pl.edu.pjwstk.jazapi.service.DbEntity;
 
-import java.lang.reflect.Array;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +23,15 @@ public abstract class CrudController<T extends DbEntity> {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Map<String, Object>>> getAll(@RequestParam(defaultValue = "1", name = "page") int page,
+    public ResponseEntity<List<Map<String, Object>>> getAll(@RequestParam(defaultValue = "0", name = "page") int page,
                                                             @RequestParam(defaultValue = "4", name = "size") int size,
-                                                            @RequestParam(defaultValue = "desc,id",name = "sort")String sort){
+                                                            @RequestParam(defaultValue = "desc,id", name = "sort") String sort) {
         try {
-            String [] sortInfo = (sort.split(","));
-         String typeOfSort = sortInfo[0];
-         String [] params = Arrays.copyOfRange(sortInfo,1,sortInfo.length);
-            List<T> all = service.getAll(page, size, typeOfSort ,params);
+            String[] sortInfo = sort.split(",");
+            String typeOfSort = sortInfo[0];
+            String[] props = Arrays.copyOfRange(sortInfo, 1, sortInfo.length);
+
+            List<T> all = service.getAll(page, size, typeOfSort, props);
             List<Map<String, Object>> payload = all.stream()
                     .map(obj -> transformToDTO().apply(obj))
                     .collect(Collectors.toList());
