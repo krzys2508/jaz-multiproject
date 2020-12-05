@@ -17,8 +17,8 @@ public abstract class CrudService<T extends DbEntity> {
         this.repository = repository;
     }
 
-    public List<T> getAll(int page, int size, String sort, String ... properties) {
-        Iterable<T> items = repository.findAll(PageRequest.of(page,size,Sort.Direction.valueOf(sort)));
+    public List<T> getAll(int page, int size, String sort, String...params) {
+        Iterable<T> items = repository.findAll(PageRequest.of(page,size,Sort.Direction.fromString(sort),params));
         var itemList = new ArrayList<T>();
 
         items.forEach(itemList::add);
